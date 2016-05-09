@@ -4,6 +4,7 @@
         ""
     ],
     "companyName": "yuri@galanter.net",
+    "enableMultiJS": false,
     "longName": "Effect Layer",
     "projectType": "native",
     "resources": {
@@ -11,12 +12,12 @@
             {
                 "file": "images/mer.png",
                 "name": "MASK_BG",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/mask_mask.png",
                 "name": "MASK_SHAPE",
-                "type": "png"
+                "type": "bitmap"
             }
         ]
     },
