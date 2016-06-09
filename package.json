@@ -1,0 +1,40 @@
+{
+    "author": "yuri@galanter.net",
+    "dependencies": {},
+    "keywords": [],
+    "name": "effect-layer",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "Effect Layer",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/mer.png",
+                    "name": "MASK_BG",
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/mask_mask.png",
+                    "name": "MASK_SHAPE",
+                    "type": "bitmap"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk"
+        ],
+        "uuid": "70b3c606-e781-417f-bc89-6a32c4120f94",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.10.0"
+}

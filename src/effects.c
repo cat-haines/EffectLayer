@@ -7,7 +7,7 @@
   
   
 // set pixel color at given coordinates 
-void set_pixel(BitmapInfo bitmap_info, int y, int x, uint8_t color) {
+static void set_pixel(BitmapInfo bitmap_info, int y, int x, uint8_t color) {
   
   if (bitmap_info.bitmap_format == GBitmapFormat1Bit || bitmap_info.bitmap_format == GBitmapFormat1BitPalette) { // for 1 bit bitmap on Aplite  --- verify if it needs to be different
     
@@ -29,7 +29,7 @@ void set_pixel(BitmapInfo bitmap_info, int y, int x, uint8_t color) {
 }
 
 // get pixel color at given coordinates 
-uint8_t get_pixel(BitmapInfo bitmap_info, int y, int x) {
+static uint8_t get_pixel(BitmapInfo bitmap_info, int y, int x) {
 
   if (bitmap_info.bitmap_format == GBitmapFormat1Bit || bitmap_info.bitmap_format == GBitmapFormat1BitPalette) { // for 1 bit bitmap on Aplite - shifting right to get bit
     
@@ -55,7 +55,7 @@ uint8_t get_pixel(BitmapInfo bitmap_info, int y, int x) {
 // THE EXTREMELY FAST LINE ALGORITHM Variation E (Addition Fixed Point PreCalc Small Display)
 // Small Display (256x256) resolution.
 // based on algorythm by Po-Han Lin at http://www.edepot.com
-void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw_color, uint8_t skip_color, uint8_t *visited) {
+static void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw_color, uint8_t skip_color, uint8_t *visited) {
   bool yLonger = false; int shortLen=y2-y; int longLen=x2-x;
   uint8_t temp_pixel;  int temp_x, temp_y;
   
@@ -82,7 +82,7 @@ void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw
           #else
             if (((visited[temp_y*20 + temp_x/8] >> (temp_x % 8)) & 1) != 1) { // for Aplite first check if pixel isn't already marked as set in user-defined array
               if (temp_pixel != skip_color) set_pixel(bitmap_info, temp_y, temp_x, draw_color); // if pixel isn't of original color - set it
-              draw_color = 1 - draw_color; // revers pixel for "lined" effect
+              draw_color = (draw_color == GColorWhiteARGB8? GColorBlackARGB8: GColorWhiteARGB8); // reverse pixel for "lined" effect
               visited[temp_y*20 + temp_x/8] ^= (-1 ^ visited[temp_y*20 + temp_x/8]) & (1 << (temp_x % 8)); // in Aplite - set the bit
             }
           #endif
@@ -101,7 +101,7 @@ void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw
           #else
             if (((visited[temp_y*20 + temp_x/8] >> (temp_x % 8)) & 1) != 1) { // for Aplite first check if pixel isn't already marked as set in user-defined array
               if (temp_pixel != skip_color) set_pixel(bitmap_info, temp_y, temp_x, draw_color); // if pixel isn't of original color - set it
-              draw_color = 1 - draw_color; // revers pixel for "lined" effect
+              draw_color = (draw_color == GColorWhiteARGB8? GColorBlackARGB8: GColorWhiteARGB8); // reverse pixel for "lined" effect
               visited[temp_y*20 + temp_x/8] ^= (-1 ^ visited[temp_y*20 + temp_x/8]) & (1 << (temp_x % 8));
             }
           #endif
@@ -122,7 +122,7 @@ void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw
           #else
             if (((visited[temp_y*20 + temp_x/8] >> (temp_x % 8)) & 1) != 1) { // for Aplite first check if pixel isn't already marked as set in user-defined array
               if (temp_pixel != skip_color) set_pixel(bitmap_info, temp_y, temp_x, draw_color); // if pixel isn't of original color - set it
-              draw_color = 1 - draw_color; // revers pixel for "lined" effect
+              draw_color = (draw_color == GColorWhiteARGB8? GColorBlackARGB8: GColorWhiteARGB8); // reverse pixel for "lined" effect
               visited[temp_y*20 + temp_x/8] ^= (-1 ^ visited[temp_y*20 + temp_x/8]) & (1 << (temp_x % 8));
             }
           #endif
@@ -141,7 +141,7 @@ void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw
           #else
             if (((visited[temp_y*20 + temp_x/8] >> (temp_x % 8)) & 1) != 1) { // for Aplite first check if pixel isn't already marked as set in user-defined array
               if (temp_pixel != skip_color) set_pixel(bitmap_info, temp_y, temp_x, draw_color); // if pixel isn't of original color - set it
-              draw_color = 1 - draw_color; // revers pixel for "lined" effect
+              draw_color = (draw_color == GColorWhiteARGB8? GColorBlackARGB8: GColorWhiteARGB8); // reverse pixel for "lined" effect
               visited[temp_y*20 + temp_x/8] ^= (-1 ^ visited[temp_y*20 + temp_x/8]) & (1 << (temp_x % 8));
             }
           #endif
@@ -152,7 +152,7 @@ void set_line(BitmapInfo bitmap_info, int y, int x, int y2, int x2, uint8_t draw
 }
 
 //determine if array of colors contains specific color  
-bool gcolor_contains(GColor *color_array, GColor pixel_color)  {
+static bool gcolor_contains(GColor *color_array, GColor pixel_color)  {
   int i=0;
   while (!gcolor_equal(color_array[i], GColorClear)){
     if (gcolor_equal(color_array[i], pixel_color)) {
@@ -687,10 +687,10 @@ void effect_shadow(GContext* ctx, GRect position, void* param) {
   int shadow_x, shadow_y;
   EffectOffset *shadow = (EffectOffset *)param;
   
-  #ifndef PBL_COLOR
-    uint8_t draw_color = gcolor_equal(shadow->offset_color, GColorWhite)? 1 : 0;
-    uint8_t skip_color = gcolor_equal(shadow->orig_color, GColorWhite)? 1 : 0;
-  #endif
+//   #ifndef PBL_COLOR
+//     uint8_t draw_color = gcolor_equal(shadow->offset_color, GColorWhite)? 1 : 0;
+//     uint8_t skip_color = gcolor_equal(shadow->orig_color, GColorWhite)? 1 : 0;
+//   #endif
   
    //capturing framebuffer bitmap
   GBitmap *fb = graphics_capture_frame_buffer(ctx);
@@ -715,7 +715,7 @@ void effect_shadow(GContext* ctx, GRect position, void* param) {
             #ifdef PBL_COLOR // for Basalt simple calling line-drawing routine
                set_line(bitmap_info, y + position.origin.y, x + position.origin.x, shadow_y, shadow_x, shadow->offset_color.argb, shadow->orig_color.argb, NULL);
             #else // for Aplite - passing user-defined array to determine if pixels have been set or not
-               set_line(bitmap_info, y + position.origin.y, x + position.origin.x, shadow_y, shadow_x, draw_color, skip_color, shadow->aplite_visited); 
+               set_line(bitmap_info, y + position.origin.y, x + position.origin.x, shadow_y, shadow_x, shadow->offset_color.argb, shadow->orig_color.argb, shadow->aplite_visited); 
             #endif
            
          } else {
@@ -724,11 +724,7 @@ void effect_shadow(GContext* ctx, GRect position, void* param) {
              
                temp_pixel = (GColor)get_pixel(bitmap_info, shadow_y, shadow_x);
                if (!gcolor_equal(temp_pixel, shadow->orig_color) & !gcolor_equal(temp_pixel, shadow->offset_color) ) {
-                 #ifdef PBL_COLOR
                     set_pixel(bitmap_info,  shadow_y, shadow_x, shadow->offset_color.argb);  
-                 #else
-                    set_pixel(bitmap_info,  shadow_y, shadow_x, gcolor_equal(shadow->offset_color, GColorWhite)? 1 : 0);
-                 #endif
                }
              }
            
