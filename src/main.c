@@ -111,15 +111,17 @@ void handle_init(void) {
     create_color_layer(text_layer1, GRect(0,85,72,84), "44", GColorWhite, GColorBlack);
     create_color_layer(text_layer1, GRect(73,85,72,84), "66", GColorWhite, GColorBlack);
   
-   //creating effect layer
-  // creating array for "visited" pixels and assigning it to shadow effect parameter
-    aplite_visited = malloc(168*20);
-    oh1.aplite_visited = aplite_visited;
+//    //creating effect layer
+//   // creating array for "visited" pixels and assigning it to shadow effect parameter
+//     aplite_visited = malloc(168*20);
+//     oh1.aplite_visited = aplite_visited;
     
-    h1 = create_shadow_layer(GRect(0,0,144,168), GColorWhite, GColorWhite, 140, 140, 1, &oh1, my_window);
+//     h1 = create_shadow_layer(GRect(0,0,144,168), GColorWhite, GColorWhite, 140, 140, 1, &oh1, my_window);
   #endif 
   
- 
+ h1 = effect_layer_create(GRect(0,0,144,168));
+ effect_layer_add_effect(h1, effect_invert_bw_only, NULL);
+ //layer_add_child(window_get_root_layer(my_window), effect_layer_get_layer(h1));
   
    
 //   mask.text = NULL;

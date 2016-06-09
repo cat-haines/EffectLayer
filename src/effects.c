@@ -180,11 +180,11 @@ void effect_invert(GContext* ctx,  GRect position, void* param) {
   
   for (int y = 0; y < position.size.h; y++)
      for (int x = 0; x < position.size.w; x++)
-        #ifdef PBL_COLOR // on Basalt simple doing NOT on entire returned byte/pixel
+        //#ifdef PBL_COLOR // on Basalt simple doing NOT on entire returned byte/pixel
           set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, (~get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x))|11000000);
-        #else // on Aplite since only 1 and 0 is returning, doing "not" by 1 - pixel
-          set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, 1 - get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x));
-        #endif
+//         #else // on Aplite since only 1 and 0 is returning, doing "not" by 1 - pixel
+//           set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, 1 - get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x));
+//         #endif
  
   graphics_release_frame_buffer(ctx, fb);          
           
@@ -259,21 +259,19 @@ void effect_invert_bw_only(GContext* ctx,  GRect position, void* param) {
   bitmap_info.bytes_per_row = gbitmap_get_bytes_per_row(fb);
   bitmap_info.bitmap_format = gbitmap_get_format(fb);
 
-#ifdef PBL_COLOR
   GColor pixel;
-#endif
   
   for (int y = 0; y < position.size.h; y++) {
      for (int x = 0; x < position.size.w; x++) {
-        #ifdef PBL_COLOR // on Basalt invert only black or white
+//         #ifdef PBL_COLOR // on Basalt invert only black or white
           pixel.argb = get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x);
           if (gcolor_equal(pixel, GColorBlack))
             set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, GColorWhite.argb);
           else if (gcolor_equal(pixel, GColorWhite))
             set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, GColorBlack.argb);
-        #else // on Aplite since only 1 and 0 is returning, doing "not" by 1 - pixel
-          set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, 1 - get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x));
-        #endif
+//         #else // on Aplite since only 1 and 0 is returning, doing "not" by 1 - pixel
+//           set_pixel(bitmap_info, y + position.origin.y, x + position.origin.x, 1 - get_pixel(bitmap_info, y + position.origin.y, x + position.origin.x));
+//         #endif
      }
   }
  
